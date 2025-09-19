@@ -13,6 +13,8 @@
         </header>
         <div id="actions">
             <button id="new-folder-btn">新規フォルダ作成</button>
+            <button id="upload-file-btn">ファイルアップロード</button>
+            <input type="file" id="file-input" style="display: none;">
         </div>
         <nav id="breadcrumbs"></nav>
         <main id="file-explorer">
@@ -23,8 +25,13 @@
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <h2 id="modal-title"></h2>
-            <input type="text" id="modal-input">
-            <button id="modal-confirm-btn"></button>
+            <div id="modal-input-container">
+                <input type="text" id="modal-input" />
+                <button id="modal-confirm-btn"></button>
+            </div>
+            <div id="modal-preview-container" style="display: none;">
+                <pre id="modal-preview-content"></pre>
+            </div>
         </div>
     </div>
 
