@@ -1,0 +1,2 @@
+# Shareplace
+このサイトは、Shareplace のサイトです。
