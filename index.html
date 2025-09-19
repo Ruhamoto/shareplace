@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shareplace</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="container">
+        <header>
+            <h1>Shareplace</h1>
+        </header>
+        <div id="actions">
+            <button id="new-folder-btn">新規フォルダ作成</button>
+        </div>
+        <nav id="breadcrumbs"></nav>
+        <main id="file-explorer">
+        </main>
+    </div>
+
+    <div id="modal" class="hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 id="modal-title"></h2>
+            <input type="text" id="modal-input">
+            <button id="modal-confirm-btn"></button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
