@@ -1,13 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     const fileExplorer = document.getElementById('file-explorer');
     const newFolderBtn = document.getElementById('new-folder-btn');
+    const uploadFileBtn = document.getElementById('upload-file-btn');
+    const fileInput = document.getElementById('file-input');
     const breadcrumbs = document.getElementById('breadcrumbs');
-
+    
     // Modal elements
     const modal = document.getElementById('modal');
     const modalTitle = document.getElementById('modal-title');
+    const modalInputContainer = document.getElementById('modal-input-container');
     const modalInput = document.getElementById('modal-input');
-    let modalConfirmBtn = document.getElementById('modal-confirm-btn'); // Changed to let
+    let modalConfirmBtn = document.getElementById('modal-confirm-btn');
+    const modalPreviewContainer = document.getElementById('modal-preview-container');
+    const modalPreviewContent = document.getElementById('modal-preview-content');
     const closeBtn = document.querySelector('.close-btn');
 
     let currentPath = '/';
@@ -66,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const icon = document.createElement('div');
             icon.className = 'icon';
             icon.textContent = item.type === 'folder' ? '📁' : '📄';
-
+            
             const nameEl = document.createElement('div');
             nameEl.className = 'name';
             nameEl.textContent = name;
@@ -115,15 +120,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Modal Logic ---
     function showModal(title, placeholder, confirmText, onConfirm) {
         modalTitle.textContent = title;
+        
+        // Configure for input mode
+        modalPreviewContainer.style.display = 'none';
+        modalInputContainer.style.display = 'block';
         modalInput.placeholder = placeholder;
         modalInput.value = '';
         modalConfirmBtn.textContent = confirmText;
-
+        
         // Clone and replace the button to remove old event listeners
         const newConfirmBtn = modalConfirmBtn.cloneNode(true);
         modalConfirmBtn.parentNode.replaceChild(newConfirmBtn, modalConfirmBtn);
         modalConfirmBtn = newConfirmBtn; // Re-assign the new button
-
+        
         modalConfirmBtn.onclick = () => {
             onConfirm(modalInput.value);
             hideModal();
@@ -131,6 +140,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         modal.classList.remove('hidden');
         modalInput.focus();
+    }
+
+    function showPreviewModal(title, content) {
+        modalTitle.textContent = title;
+
+        // Configure for preview mode
+        modalInputContainer.style.display = 'none';
+        modalPreviewContainer.style.display = 'block';
+        modalPreviewContent.textContent = content;
+
+        modal.classList.remove('hidden');
     }
 
     function hideModal() {
@@ -161,8 +181,37 @@ document.addEventListener('DOMContentLoaded', () => {
             if (item.type === 'folder') {
                 currentPath += itemName + '/';
                 render();
+            } else if (item.type === 'file') {
+                showPreviewModal(itemName, item.content);
             }
         }
+    });
+
+    uploadFileBtn.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const currentFolder = getItemByPath(currentPath);
+        if (currentFolder.children[file.name]) {
+            alert('同じ名前のファイルまたはフォルダが既に存在します。');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const content = event.target.result;
+            currentFolder.children[file.name] = { type: 'file', content: content };
+            saveFileSystem();
+            render();
+        };
+        reader.readAsText(file);
+
+        // Reset file input to allow uploading the same file again
+        e.target.value = '';
     });
 
     // --- Context Menu ---
